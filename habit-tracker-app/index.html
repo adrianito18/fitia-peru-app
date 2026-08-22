@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fitia Perú">
+  <title>Fitia Tracker Perú - Marcas, Macros & Escáner IA</title>
+  
+  <!-- Google Fonts & Chart.js CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Estilos Personalizados Fitia Theme -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar de Navegación (Desktop) -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span>🌱</span> Fitia Perú <span class="brand-badge">PRO</span>
+      </div>
+      <ul class="nav-links">
+        <li class="nav-item">
+          <button data-target="dashboardView" class="active">
+            <span>📊</span> Dashboard
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-target="habitsView">
+            <span>🎯</span> Hábitos
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-target="healthView">
+            <span>🥗</span> Nutrición & Fotos
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-target="chartsView">
+            <span>📈</span> Estadísticas
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-target="tipsView">
+            <span>💡</span> Especialistas
+          </button>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+      
+      <!-- SECCIÓN 1: DASHBOARD -->
+      <section id="dashboardView" class="view-section">
+        <div class="header-bar">
+          <div class="page-title">
+            <h1>¡Bienvenido a tu Plan! 🌱</h1>
+            <p>Empieza registrando tu peso, hábitos y alimentos de hoy.</p>
+          </div>
+        </div>
+
+        <!-- Selector de Objetivo Físico (Fitia Style) -->
+        <div class="goal-selector-bar">
+          <button class="goal-btn active" data-goal="fat_loss">🔥 Perder Grasa</button>
+          <button class="goal-btn" data-goal="maintain">⚖️ Mantener Peso</button>
+          <button class="goal-btn" data-goal="muscle_gain">💪 Ganar Músculo</button>
+        </div>
+
+        <!-- Tarjetas de Resumen General -->
+        <div class="grid-cards">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Calorías Consumidas</span>
+              <span style="font-size: 1.4rem;">🔥</span>
+            </div>
+            <div class="stat-value" id="dashCaloriesTotal">0 / 2000 kcal</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="dashCaloriesProgress" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Hábitos Completados</span>
+              <span style="font-size: 1.4rem;">🎯</span>
+            </div>
+            <div class="stat-value" id="dashHabitsCount">0 / 0</div>
+            <div class="stat-desc" id="dashHabitsPercentText">0% completado hoy</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="dashHabitsProgress" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Peso Actual</span>
+              <span style="font-size: 1.4rem;">⚖️</span>
+            </div>
+            <div class="stat-value" id="dashCurrentWeight">-- kg</div>
+            <div class="stat-desc" id="dashWeightDiff">Aún sin registros</div>
+          </div>
+        </div>
+
+        <!-- Desglose de Macronutrientes -->
+        <h3 class="card-title" style="margin-bottom: 0.75rem;">Macronutrientes del Día</h3>
+        <div class="macros-grid">
+          <div class="macro-card protein">
+            <div class="macro-name">🔴 Proteínas</div>
+            <div class="macro-val" id="dashProteinVal">0 / 140g</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill protein" id="dashProteinProgress" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="macro-card carbs">
+            <div class="macro-name">🔵 Carbohidratos</div>
+            <div class="macro-val" id="dashCarbsVal">0 / 180g</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill carbs" id="dashCarbsProgress" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="macro-card fat">
+            <div class="macro-name">🟡 Grasas</div>
+            <div class="macro-val" id="dashFatVal">0 / 60g</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill fat" id="dashFatProgress" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Widget de Hidratación -->
+        <div class="water-widget">
+          <div>
+            <h4 style="font-size: 1rem; font-weight: 700;">💧 Registro de Hidratación</h4>
+            <p class="stat-desc" id="waterCountText">0 / 10 vasos (0L de 2.5L)</p>
+            <div class="water-icons" id="waterGlassesIcons"></div>
+          </div>
+          <div class="water-controls">
+            <button class="btn-water" id="btnSubWater">-</button>
+            <button class="btn-water" id="btnAddWater">+</button>
+          </div>
+        </div>
+
+        <!-- Hábitos y Dona de Macros -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Tus Hábitos para Hoy</h3>
+            </div>
+            <div class="item-list" id="dashHabitsList"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Distribución de Macronutrientes (%)</h3>
+            </div>
+            <div class="chart-container">
+              <canvas id="macroChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: HÁBITOS -->
+      <section id="habitsView" class="view-section" style="display: none;">
+        <div class="header-bar">
+          <div class="page-title">
+            <h1>Gestión de Hábitos Diarios</h1>
+            <p>Crea tu primer hábito para empezar tu racha diaria.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+          <div class="card">
+            <h3 class="card-title" style="margin-bottom: 1rem;">Crear Nuevo Hábito</h3>
+            <form id="formAddHabit">
+              <div class="form-group">
+                <label for="inputHabitTitle">Nombre del Hábito</label>
+                <input type="text" id="inputHabitTitle" class="form-control" placeholder="Ej. Tomar 2L de agua" required>
+              </div>
+              <div class="form-group">
+                <label for="selectHabitCategory">Categoría</label>
+                <select id="selectHabitCategory" class="form-control">
+                  <option value="fitness">🏋️ Ejercicio / Fitness</option>
+                  <option value="hydration">💧 Hidratación</option>
+                  <option value="nutrition">🥗 Nutrición</option>
+                  <option value="sleep">🌙 Sueño y Descanso</option>
+                  <option value="mental">🧠 Salud Mental</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="inputHabitIcon">Emoji / Ícono</label>
+                <input type="text" id="inputHabitIcon" class="form-control" placeholder="Ej. 🧘, 🏃, 📚" value="🎯">
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                ➕ Guardar Hábito
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title" style="margin-bottom: 1rem;">Lista de Hábitos Registrados</h3>
+            <div class="item-list" id="habitsFullList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: NUTRICIÓN, MARCAS PERUANAS Y ESCÁNER DE FOTO -->
+      <section id="healthView" class="view-section" style="display: none;">
+        <div class="header-bar">
+          <div class="page-title">
+            <h1>Nutrición & Marcas de Perú</h1>
+            <p>Busca productos comerciales en Plaza Vea, Wong, Metro, Tottus o escanea tu comida por foto.</p>
+          </div>
+        </div>
+
+        <!-- ESCÁNER DE COMIDA POR FOTO -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h3 class="card-title" style="margin-bottom: 0.5rem;">📸 Escáner de Comida por Foto (IA Vision)</h3>
+          <p class="stat-desc" style="margin-bottom: 1rem;">
+            Toma una foto a tu plato o sube una imagen para calcular sus calorías y macronutrientes automáticamente:
+          </p>
+
+          <div class="scanner-container">
+            <div class="photo-dropzone" id="photoDropzone">
+              <div class="dropzone-icon">📷</div>
+              <h4 style="font-size: 1rem; font-weight: 700;">Haz clic o toma una foto con tu cámara</h4>
+              <p class="stat-desc">Soporta fotos en directo desde iPhone o imágenes de galería (Lomo saltado, pollo a la brasa, etc.)</p>
+              <input type="file" id="photoFileInput" accept="image/*" capture="environment" style="display: none;">
+            </div>
+
+            <div class="scan-result-box">
+              <div id="scanResultCard" class="scan-preview-card" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUSCADOR DE PRODUCTOS Y MARCAS PERUANAS -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h3 class="card-title">🛒 Buscador de Marcas Peruanas (Plaza Vea, Wong, Metro, Tottus)</h3>
+          </div>
+
+          <div class="search-bar-peru">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="inputPeruSearch" placeholder="Buscar por marca o producto (ej. Gloria, San Fernando, Laive, Costeño, Don Vittorio, Ceviche...)">
+          </div>
+
+          <div class="food-grid" id="foodCatalogGrid"></div>
+        </div>
+
+        <div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          
+          <!-- Registrar Alimento Personalizado -->
+          <div class="card">
+            <h3 class="card-title" style="margin-bottom: 1rem;">🍎 Registrar Alimento Manual</h3>
+            <form id="formAddMeal" style="margin-bottom: 1.5rem;">
+              <div class="form-group">
+                <label for="inputMealName">Nombre del Alimento</label>
+                <input type="text" id="inputMealName" class="form-control" placeholder="Ej. Ensalada con pollo" required>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <div class="form-group" style="flex: 1;">
+                  <label for="inputMealCalories">Calorías (kcal)</label>
+                  <input type="number" id="inputMealCalories" class="form-control" placeholder="350" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label for="selectMealType">Comida</label>
+                  <select id="selectMealType" class="form-control">
+                    <option value="Desayuno">Desayuno</option>
+                    <option value="Almuerzo">Almuerzo</option>
+                    <option value="Cena">Cena</option>
+                    <option value="Snack">Snack</option>
+                  </select>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem;">
+                <div class="form-group">
+                  <label for="inputMealProtein">Prot (g)</label>
+                  <input type="number" step="0.1" id="inputMealProtein" class="form-control" placeholder="25">
+                </div>
+                <div class="form-group">
+                  <label for="inputMealCarbs">Carbs (g)</label>
+                  <input type="number" step="0.1" id="inputMealCarbs" class="form-control" placeholder="40">
+                </div>
+                <div class="form-group">
+                  <label for="inputMealFat">Grasas (g)</label>
+                  <input type="number" step="0.1" id="inputMealFat" class="form-control" placeholder="8">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">➕ Añadir al Diario</button>
+            </form>
+
+            <h4 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Comidas Registradas Hoy</h4>
+            <div class="item-list" id="todayMealLogs" style="max-height: 200px; overflow-y: auto;"></div>
+          </div>
+
+          <!-- Historial de Peso -->
+          <div class="card">
+            <h3 class="card-title" style="margin-bottom: 1rem;">⚖️ Historial de Peso</h3>
+            <form id="formAddWeight" style="margin-bottom: 1.5rem;">
+              <div class="form-group">
+                <label for="inputWeightValue">Peso Actual (kg)</label>
+                <input type="number" step="0.1" id="inputWeightValue" class="form-control" placeholder="Ej. 70.0" required>
+              </div>
+              <div class="form-group">
+                <label for="inputWeightDate">Fecha</label>
+                <input type="date" id="inputWeightDate" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">📌 Registrar Peso</button>
+            </form>
+
+            <div style="max-height: 180px; overflow-y: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                <thead>
+                  <tr style="text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">
+                    <th style="padding: 0.4rem;">Fecha</th>
+                    <th style="padding: 0.4rem;">Peso</th>
+                    <th style="padding: 0.4rem; text-align: right;">Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="weightLogsBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Metas de Nutrición -->
+          <div class="card">
+            <h3 class="card-title" style="margin-bottom: 1rem;">🎯 Ajustar Metas Nutricionales</h3>
+            <form id="formHealthGoals">
+              <div class="form-group">
+                <label for="inputTargetWeight">Peso Objetivo (kg)</label>
+                <input type="number" step="0.1" id="inputTargetWeight" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="inputTargetCalories">Calorías Diarias (kcal)</label>
+                <input type="number" id="inputTargetCalories" class="form-control" required>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem;">
+                <div class="form-group">
+                  <label for="inputTargetProtein">Proteína (g)</label>
+                  <input type="number" id="inputTargetProtein" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="inputTargetCarbs">Carbs (g)</label>
+                  <input type="number" id="inputTargetCarbs" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="inputTargetFat">Grasas (g)</label>
+                  <input type="number" id="inputTargetFat" class="form-control" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">💾 Guardar Metas</button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: ESTADÍSTICAS -->
+      <section id="chartsView" class="view-section" style="display: none;">
+        <div class="header-bar">
+          <div class="page-title">
+            <h1>Estadísticas & Analíticas Fitia</h1>
+            <p>Análisis visual de tu evolución física, calorías y distribución de macronutrientes.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📈 Evolución de Peso Corporal</h3>
+            </div>
+            <div class="chart-container">
+              <canvas id="weightChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">🔥 Consumo Calórico Semanal vs Meta</h3>
+            </div>
+            <div class="chart-container">
+              <canvas id="calorieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: ESPECIALISTAS -->
+      <section id="tipsView" class="view-section" style="display: none;">
+        <div class="header-bar">
+          <div class="page-title">
+            <h1>Consejos de Especialistas</h1>
+            <p>Recomendaciones en nutrición, acondicionamiento físico e hidratación.</p>
+          </div>
+        </div>
+
+        <div class="filter-buttons">
+          <button class="btn-filter active" data-category="all">Todos</button>
+          <button class="btn-filter" data-category="fitness">🏋️ Fitness</button>
+          <button class="btn-filter" data-category="nutrition">🥗 Nutrición</button>
+          <button class="btn-filter" data-category="hydration">💧 Hidratación</button>
+          <button class="btn-filter" data-category="sleep">🌙 Sueño</button>
+          <button class="btn-filter" data-category="mental">🧠 Salud Mental</button>
+        </div>
+
+        <div class="tips-grid" id="tipsGrid"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- NAVEGACIÓN INFERIOR MÓVIL (IPHONE / SMARTPHONES) -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" data-target="dashboardView">
+      <span>📊</span>
+      <span>Inicio</span>
+    </button>
+    <button class="mobile-nav-btn" data-target="habitsView">
+      <span>🎯</span>
+      <span>Hábitos</span>
+    </button>
+    <button class="mobile-nav-btn" data-target="healthView">
+      <span>🥗</span>
+      <span>Nutrición</span>
+    </button>
+    <button class="mobile-nav-btn" data-target="chartsView">
+      <span>📈</span>
+      <span>Estadísticas</span>
+    </button>
+    <button class="mobile-nav-btn" data-target="tipsView">
+      <span>💡</span>
+      <span>Consejos</span>
+    </button>
+  </nav>
+
+  <!-- Scripts JavaScript -->
+  <script src="js/tips.js"></script>
+  <script src="js/habits.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
